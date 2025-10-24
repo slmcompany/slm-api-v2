@@ -1,7 +1,9 @@
 package com.devmam.slmapiv2.services;
 
+import io.minio.MinioClient;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.List;
 
 public interface MinioService {
@@ -13,4 +15,9 @@ public interface MinioService {
     boolean exists(String objectName);
     String getPublicUrl(String objectName);
     String generatePresignedUploadUrl(String objectName, int expirySeconds) throws Exception;
+    String generatePresignedDownloadUrl(String objectName, int expirySeconds) throws Exception;
+
+    InputStream getObjectRange(String objectName, Long start, Long end) throws Exception;
+    String getBucketName();
+    MinioClient getMinioClient();
 }
