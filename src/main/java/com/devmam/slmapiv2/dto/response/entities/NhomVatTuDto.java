@@ -16,8 +16,10 @@ import java.util.Map;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
+@EqualsAndHashCode(of = {"id"})
 public class NhomVatTuDto implements Serializable {
     Integer id;
+    String ma;
     NganhHangDto nghanhHang;
     @Size(max = 400)
     String ten;

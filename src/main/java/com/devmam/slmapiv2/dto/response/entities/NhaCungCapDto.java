@@ -15,6 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
+@EqualsAndHashCode(of = {"id"})
 public class NhaCungCapDto implements Serializable {
     Integer id;
     @Size(max = 200)

@@ -1,31 +1,26 @@
-package com.devmam.slmapiv2.dto.response.entities;
+package com.devmam.slmapiv2.dto.request.entities;
 
+
+import com.devmam.slmapiv2.dto.response.entities.VatTuDto;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.io.Serializable;
 import java.time.Instant;
 
-/**
- * DTO for {@link com.devmam.slmapiv2.entities.VatTuTronGoi}
- */
 @AllArgsConstructor
 @Getter
 @Setter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-@EqualsAndHashCode(of = {"id"})
-public class VatTuTronGoiDto implements Serializable {
-    Integer id;
-    VatTuDto vatTu;
+public class VatTuTronGoiCreatingDto {
+    Integer vatTuId;
     @Size(max = 500)
     String moTa;
     Integer soLuong;
     Double gia;
     Double gm;
-    Instant taoLuc;
     Integer thoiGianBaoHanh;
     Boolean duocBaoHanh;
     Integer trangThai;

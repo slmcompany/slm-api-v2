@@ -17,6 +17,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
+@EqualsAndHashCode(of = {"id"})
 public class TepTinDto implements Serializable {
     Integer id;
     @Size(max = 1000)

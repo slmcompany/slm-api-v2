@@ -4,11 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
-import java.util.Map;
 
 @Builder
 @AllArgsConstructor
@@ -16,16 +13,13 @@ import java.util.Map;
 @Getter
 @Setter
 @Entity
-@Table(name = "nhom_vat_tu")
-public class NhomVatTu implements Serializable {
-    private static final long serialVersionUID = -6981409597414038825L;
+@Table(name = "nhom_tron_goi")
+public class NhomTronGoi implements Serializable {
+    private static final long serialVersionUID = 4870267156852250787L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-
-    @Column(name = "ma", length = 200)
-    private String ma;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nghanh_hang_id")
@@ -35,17 +29,17 @@ public class NhomVatTu implements Serializable {
     @Column(name = "ten", length = 400)
     private String ten;
 
-    @Column(name = "thuoc_tinh_rieng")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> thuocTinhRieng;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "thuong_hieu_tam_pin")
+    private ThuongHieu thuongHieuTamPin;
 
-    @ColumnDefault("0")
-    @Column(name = "gm")
-    private Double gm;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "thuong_hieu_inverter")
+    private ThuongHieu thuongHieuInverter;
 
-    @ColumnDefault("false")
-    @Column(name = "vat_tu_chinh")
-    private Boolean vatTuChinh;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "thuong_hieu_pin_luu_tru")
+    private ThuongHieu thuongHieuPinLuuTru;
 
     @ColumnDefault("0")
     @Column(name = "trang_thai")

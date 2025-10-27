@@ -1,9 +1,8 @@
 package com.devmam.slmapiv2.dto.response.entities;
 
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -14,45 +13,27 @@ import java.util.Set;
  */
 @AllArgsConstructor
 @Getter
-@EqualsAndHashCode
+@Setter
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
+@EqualsAndHashCode(of = {"id"})
 public class TronGoiDto implements Serializable {
-    private final Integer id;
-    private final NganhHangDto nghanhHang;
+    Integer id;
+    NhomTronGoiDto nhomTronGoi;
     @Size(max = 400)
-    private final String ten;
+    String ten;
+    TepTinDto tepTin;
     @Size(max = 50)
-    private final String loaiHeThong;
+    String loaiHeThong;
     @Size(max = 50)
-    private final String loaiPha;
-    private final Double sanLuongToiThieu;
-    private final Double sanLuongToiDa;
-    private final String moTa;
-    private final Instant taoLuc;
-    private final Double tongGia;
-    private final Boolean banChay;
-    private final Integer trangThai;
-    private final Set<VatTuTronGoiDto> vatTuTronGois;
-
-    /**
-     * DTO for {@link com.devmam.slmapiv2.entities.NganhHang}
-     */
-    @AllArgsConstructor
-    @Getter
-    @EqualsAndHashCode
-    public static class NganhHangDto implements Serializable {
-        private final Integer id;
-        @Size(max = 50)
-        private final String ma;
-        @Size(max = 100)
-        private final String ten;
-        @Size(max = 20)
-        private final String sdtSale;
-        @Size(max = 20)
-        private final String sdtTech;
-        @Size(max = 1000)
-        private final String anhNgang;
-        @Size(max = 1000)
-        private final String anhVuong;
-        private final Integer trangThai;
-    }
+    String loaiPha;
+    Double sanLuongToiThieu;
+    Double sanLuongToiDa;
+    String moTa;
+    Instant taoLuc;
+    Double tongGia;
+    Boolean banChay;
+    Integer trangThai;
+    Set<VatTuTronGoiDto> vatTuTronGois;
 }

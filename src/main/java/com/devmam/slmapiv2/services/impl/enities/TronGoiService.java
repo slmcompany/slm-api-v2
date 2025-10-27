@@ -1,17 +1,53 @@
 package com.devmam.slmapiv2.services.impl.enities;
 
-import com.devmam.slmapiv2.entities.TronGoi;
+import com.devmam.slmapiv2.constant.enums.FileType;
+import com.devmam.slmapiv2.dto.request.entities.TronGoiCreatingDto;
+import com.devmam.slmapiv2.dto.request.entities.VatTuTronGoiCreatingDto;
+import com.devmam.slmapiv2.dto.response.ResponseData;
+import com.devmam.slmapiv2.dto.response.entities.TronGoiDto;
+import com.devmam.slmapiv2.entities.*;
+import com.devmam.slmapiv2.exception.customize.CommonException;
+import com.devmam.slmapiv2.mapper.TronGoiMapper;
+import com.devmam.slmapiv2.services.JwtService;
+import com.devmam.slmapiv2.services.MinioService;
 import com.devmam.slmapiv2.services.impl.BaseServiceImpl;
 import jakarta.persistence.EntityManager;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 @Service
+@Slf4j
 public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
+
+
+    @Autowired
+    private TepTinService tepTinService;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private MinioService minioService;
+
+    @Autowired
+    private VatTuService vatTuService;
+
+    @Autowired
+    private NhomTronGoiService nhomTronGoiService;
+
+    @Autowired
+    private VatTuTronGoiService vatTuTronGoiService;
 
     @Autowired
     private EntityManager entityManager;
+
     public TronGoiService(JpaRepository<TronGoi, Integer> repository) {
         super(repository);
     }
@@ -20,4 +56,60 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
     public EntityManager getEntityManager() {
         return entityManager;
     }
+
+    @Transactional
+    public ResponseEntity<ResponseData<TronGoiDto>> create(TronGoiCreatingDto dto, MultipartFile file) {
+
+        TronGoi tronGoi = TronGoiCreatingDto.toEntity(dto);
+        Optional<NhomTronGoi> nhomTronGoi = nhomTronGoiService.getOne(dto.getNhomTronGoiId());
+        if (nhomTronGoi.isEmpty()) {
+            throw new CommonException("Không tìm thấy nhóm trọn gói id:" + dto.getNhomTronGoiId());
+        }
+        tronGoi.setNhomTronGoi(nhomTronGoi.get());
+        tronGoi = create(tronGoi);
+
+        for (VatTuTronGoiCreatingDto vatTuTronGoiDto : dto.getVatTuTronGois()) {
+            Optional<VatTu> vatTu = vatTuService.getOne(vatTuTronGoiDto.getVatTuId());
+            if (vatTu.isEmpty()) {
+                throw new CommonException("Không tìm thấy vật tư id: " + vatTuTronGoiDto.getVatTuId());
+            }
+            vatTuTronGoiService.create(VatTuTronGoi.builder()
+                    .tronGoi(tronGoi)
+                    .vatTu(vatTu.get())
+                    .moTa(vatTuTronGoiDto.getMoTa())
+                    .soLuong(vatTuTronGoiDto.getSoLuong())
+                    .gia(vatTuTronGoiDto.getGia())
+                    .gm(vatTuTronGoiDto.getGm())
+                    .duocBaoHanh(vatTuTronGoiDto.getDuocBaoHanh())
+                    .trangThai(vatTuTronGoiDto.getTrangThai())
+                    .build());
+        }
+
+        try {
+            String objectName = minioService.upload(file);
+            TepTin creatingTepTin = tepTinService.create(
+                    TepTin.builder()
+                            .tenTepGoc(tronGoi.getTen())
+                            .tenTaiLen(tronGoi.getTen())
+                            .tenLuuTru(objectName)
+                            .duongDan(minioService.getPublicUrl(objectName))
+                            .loaiTepTin(FileType.IMAGE.toString())
+                            .duoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"))
+                            .build()
+            );
+            tronGoi.setTepTin(creatingTepTin);
+            tronGoi = update(tronGoi.getId(), tronGoi);
+            return ResponseEntity.ok(
+                    ResponseData.<TronGoiDto>builder()
+                            .status(200)
+                            .message("Create success")
+                            .data(TronGoiMapper.INSTANCE.toDto(tronGoi))
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Lỗi tạo tệp tin cho trọn gói: {}", dto.getTen(), e);
+            throw new RuntimeException("Lỗi tạo tệp tin cho trọn gói: " + dto.getTen(), e);
+        }
+    }
+
 }

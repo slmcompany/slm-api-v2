@@ -1,5 +1,6 @@
 package com.devmam.slmapiv2.services.impl.utils;
 
+import com.devmam.slmapiv2.dto.response.FileObjectInfo;
 import com.devmam.slmapiv2.services.MinioService;
 import io.minio.*;
 import io.minio.errors.ErrorResponseException;
@@ -17,6 +18,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MinioServiceImpl implements MinioService {
@@ -39,12 +41,22 @@ public class MinioServiceImpl implements MinioService {
     @Override
     public String upload(MultipartFile file, String objectName) throws Exception {
         try (InputStream is = file.getInputStream()) {
+            // Lấy đuôi tệp gốc
+            String originalFilename = file.getOriginalFilename();
+            String fileExtension = originalFilename != null && originalFilename.contains(".")
+                    ? originalFilename.substring(originalFilename.lastIndexOf("."))
+                    : "";
+
             ObjectWriteResponse res = minioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(minioBucketName)
                             .object(objectName)
                             .stream(is, file.getSize(), -1)
                             .contentType(file.getContentType())
+                            .userMetadata(Map.of(
+                                    "original-filename", originalFilename,
+                                    "file-extension", fileExtension
+                            ))
                             .build());
             logger.info("Uploaded to MinIO: {} -> etag:{}", objectName, res.etag());
             return objectName;
@@ -162,6 +174,34 @@ public class MinioServiceImpl implements MinioService {
     @Override
     public MinioClient getMinioClient() {
         return minioClient;
+    }
+
+    @Override
+    public FileObjectInfo getObjectInfo(String objectName) throws Exception {
+        try {
+            StatObjectResponse stat = minioClient.statObject(StatObjectArgs.builder()
+                    .bucket(minioBucketName)
+                    .object(objectName)
+                    .build());
+
+            return FileObjectInfo.builder()
+                    .objectName(stat.object())
+                    .bucketName(stat.bucket())
+                    .size(stat.size())
+                    .contentType(stat.contentType())
+                    .etag(stat.etag())
+                    .lastModified(stat.lastModified())
+                    .userMetadata(stat.userMetadata())
+                    .region(stat.region())
+                    .versionId(stat.versionId())
+                    .build();
+        } catch (ErrorResponseException e) {
+            logger.error("Object not found: {}", objectName);
+            throw new Exception("Object not found: " + objectName, e);
+        } catch (Exception e) {
+            logger.error("Error getting object info {}: {}", objectName, e.getMessage());
+            throw e;
+        }
     }
 }
 

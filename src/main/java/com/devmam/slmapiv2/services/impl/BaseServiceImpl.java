@@ -53,7 +53,7 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
     }
 
     public BaseServiceImpl(JpaRepository<T, ID> repository) {
-        this(repository, "status");
+        this(repository, "trangThai");
     }
 
     protected abstract EntityManager getEntityManager();

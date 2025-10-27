@@ -5,10 +5,9 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
-import java.time.Instant;
 
 /**
- * DTO for {@link com.devmam.slmapiv2.entities.VatTuTronGoi}
+ * DTO for {@link com.devmam.slmapiv2.entities.NhomTronGoi}
  */
 @AllArgsConstructor
 @Getter
@@ -17,16 +16,13 @@ import java.time.Instant;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 @EqualsAndHashCode(of = {"id"})
-public class VatTuTronGoiDto implements Serializable {
+public class NhomTronGoiDto implements Serializable {
     Integer id;
-    VatTuDto vatTu;
-    @Size(max = 500)
-    String moTa;
-    Integer soLuong;
-    Double gia;
-    Double gm;
-    Instant taoLuc;
-    Integer thoiGianBaoHanh;
-    Boolean duocBaoHanh;
+    NganhHangDto nghanhHang;
+    @Size(max = 400)
+    String ten;
+    ThuongHieuDto thuongHieuTamPin;
+    ThuongHieuDto thuongHieuInverter;
+    ThuongHieuDto thuongHieuPinLuuTru;
     Integer trangThai;
 }

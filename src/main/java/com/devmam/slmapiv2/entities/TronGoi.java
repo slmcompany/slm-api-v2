@@ -24,12 +24,16 @@ public class TronGoi implements Serializable {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "nghanh_hang_id")
-    private NganhHang nghanhHang;
+    @JoinColumn(name = "nhom_tron_goi_id")
+    private NhomTronGoi nhomTronGoi;
 
     @Size(max = 400)
     @Column(name = "ten", length = 400)
     private String ten;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tep_tin_id")
+    private TepTin tepTin;
 
     @Size(max = 50)
     @Column(name = "loai_he_thong", length = 50)

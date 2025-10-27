@@ -18,7 +18,8 @@ import java.util.Set;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class VatTuDTO implements Serializable {
+@EqualsAndHashCode(of = {"id"})
+public class VatTuDto implements Serializable {
     Integer id;
     NhomVatTuDto nhomVatTu;
     ThuongHieuDto thuongHieu;

@@ -50,8 +50,8 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public Long getUserId(String token) {
-        return (Long) getClaimsFromToken(token).getClaims().get("id");
+    public Integer getUserId(String token) {
+        return (Integer) getClaimsFromToken(token).getClaims().get("id");
     }
 
     @Override

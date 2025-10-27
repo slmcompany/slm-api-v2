@@ -1,0 +1,51 @@
+package com.devmam.slmapiv2.controller;
+
+import com.devmam.slmapiv2.dto.request.BaseFilterRequest;
+import com.devmam.slmapiv2.dto.response.ResponseData;
+import com.devmam.slmapiv2.dto.response.entities.NhomVatTuDto;
+import com.devmam.slmapiv2.entities.NhomVatTu;
+import com.devmam.slmapiv2.exception.customize.CommonException;
+import com.devmam.slmapiv2.mapper.NhomVatTuMapper;
+import com.devmam.slmapiv2.services.impl.enities.NhomVatTuService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/nhom-vat-tu")
+public class NhomVatTuController {
+
+    @Autowired
+    private NhomVatTuService nhomVatTuService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseData<NhomVatTuDto>> getById(@PathVariable Integer id) {
+        Optional<NhomVatTu> nhomVatTu = nhomVatTuService.getOne(id);
+        if (nhomVatTu.isEmpty()) {
+            throw new CommonException("Không tìm thấy nhóm vật tư id: " + id);
+        }
+        return ResponseEntity.ok(
+                ResponseData.<NhomVatTuDto>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(NhomVatTuMapper.INSTANCE.toDto(nhomVatTu.get()))
+                        .build()
+        );
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<ResponseData<Page<NhomVatTuDto>>> filter(@RequestBody BaseFilterRequest filter) {
+        return ResponseEntity.ok(
+                ResponseData.<Page<NhomVatTuDto>>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(NhomVatTuMapper.INSTANCE.toDtoPage(nhomVatTuService.filter(filter)))
+                        .build()
+        );
+    }
+}

@@ -1,6 +1,7 @@
 package com.devmam.slmapiv2.controller;
 
 import com.devmam.slmapiv2.dto.request.BaseFilterRequest;
+import com.devmam.slmapiv2.dto.request.entities.TronGoiCreatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.TronGoiDto;
 import com.devmam.slmapiv2.entities.TronGoi;
@@ -9,8 +10,10 @@ import com.devmam.slmapiv2.mapper.TronGoiMapper;
 import com.devmam.slmapiv2.services.impl.enities.TronGoiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -22,7 +25,7 @@ public class TronGoiController {
     private TronGoiService tronGoiService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseData<TronGoiDto>> getById(Integer id) {
+    public ResponseEntity<ResponseData<TronGoiDto>> getById(@PathVariable Integer id) {
         Optional<TronGoi> tronGoi = tronGoiService.getOne(id);
 
         if(tronGoi.isEmpty()){
@@ -49,6 +52,14 @@ public class TronGoiController {
                         .data(TronGoiMapper.INSTANCE.toDtoPage(tronGoiService.filter(filter)))
                         .build()
         );
+    }
+
+    @PostMapping(
+            value = "/create",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<ResponseData<TronGoiDto>> create(@RequestPart("dto") TronGoiCreatingDto dto, @RequestPart("file") MultipartFile file) {
+        return tronGoiService.create(dto,file);
     }
 
 }

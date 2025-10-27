@@ -1,5 +1,6 @@
 package com.devmam.slmapiv2.services;
 
+import com.devmam.slmapiv2.dto.response.FileObjectInfo;
 import io.minio.MinioClient;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,4 +21,6 @@ public interface MinioService {
     InputStream getObjectRange(String objectName, Long start, Long end) throws Exception;
     String getBucketName();
     MinioClient getMinioClient();
+
+    FileObjectInfo getObjectInfo(String objectName) throws Exception;
 }

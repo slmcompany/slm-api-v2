@@ -14,6 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
+@EqualsAndHashCode(of = {"id"})
 public class AnhVatTuDto implements Serializable {
     Integer id;
     TepTinDto tepTin;
