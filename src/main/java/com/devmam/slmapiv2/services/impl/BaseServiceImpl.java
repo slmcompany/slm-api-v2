@@ -295,7 +295,7 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
         return path;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     protected Predicate createPredicate(CriteriaBuilder cb, Path<?> path, FilterCriteria filter) {
         Object value = filter.getValue();
         if (value == null) {
@@ -304,63 +304,55 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
 
         switch (filter.getOperation()) {
             case EQUALS:
-                if (path.getJavaType().equals(UUID.class) && value instanceof String str) {
-                    return cb.equal(path, UUID.fromString(str));
-                }
                 return cb.equal(path, value);
 
             case LESS_THAN:
-                if (value instanceof Comparable comparable) {
-                    return cb.lessThan(path.as(Comparable.class), comparable);
+                if (Comparable.class.isAssignableFrom(path.getJavaType())) {
+                    return cb.lessThan((Path<Comparable>) path.as((Class<? extends Comparable>) path.getJavaType()),
+                            (Comparable) value);
                 }
-                throw new IllegalArgumentException("Giá trị không phải Comparable cho toán tử LESS_THAN");
+                throw new IllegalArgumentException("Trường '" + filter.getFieldName() + "' không phải kiểu Comparable");
 
             case LESS_THAN_OR_EQUAL:
-                if (value instanceof Comparable comparable) {
-                    return cb.lessThanOrEqualTo(path.as(Comparable.class), comparable);
+                if (Comparable.class.isAssignableFrom(path.getJavaType())) {
+                    return cb.lessThanOrEqualTo((Path<Comparable>) path.as((Class<? extends Comparable>) path.getJavaType()),
+                            (Comparable) value);
                 }
-                throw new IllegalArgumentException("Giá trị không phải Comparable cho toán tử LESS_THAN_OR_EQUAL");
+                throw new IllegalArgumentException("Trường '" + filter.getFieldName() + "' không phải kiểu Comparable");
 
             case GREATER_THAN:
-                if (value instanceof Comparable comparable) {
-                    return cb.greaterThan(path.as(Comparable.class), comparable);
+                if (Comparable.class.isAssignableFrom(path.getJavaType())) {
+                    return cb.greaterThan((Path<Comparable>) path.as((Class<? extends Comparable>) path.getJavaType()),
+                            (Comparable) value);
                 }
-                throw new IllegalArgumentException("Giá trị không phải Comparable cho toán tử GREATER_THAN");
+                throw new IllegalArgumentException("Trường '" + filter.getFieldName() + "' không phải kiểu Comparable");
 
             case GREATER_THAN_OR_EQUAL:
-                if (value instanceof Comparable comparable) {
-                    return cb.greaterThanOrEqualTo(path.as(Comparable.class), comparable);
+                if (Comparable.class.isAssignableFrom(path.getJavaType())) {
+                    return cb.greaterThanOrEqualTo((Path<Comparable>) path.as((Class<? extends Comparable>) path.getJavaType()),
+                            (Comparable) value);
                 }
-                throw new IllegalArgumentException("Giá trị không phải Comparable cho toán tử GREATER_THAN_OR_EQUAL");
+                throw new IllegalArgumentException("Trường '" + filter.getFieldName() + "' không phải kiểu Comparable");
 
             case LIKE:
-                if (value instanceof String str) {
-                    return cb.like(path.as(String.class), "%" + str + "%");
-                }
-                throw new IllegalArgumentException("LIKE chỉ áp dụng cho String");
+                return cb.like(path.as(String.class), "%" + value + "%");
 
             case ILIKE:
-                if (value instanceof String str) {
-                    return cb.like(cb.lower(path.as(String.class)), "%" + str.toLowerCase() + "%");
-                }
-                throw new IllegalArgumentException("ILIKE chỉ áp dụng cho String");
+                return cb.like(cb.lower(path.as(String.class)), "%" + value.toString().toLowerCase() + "%");
 
             case IN:
-                if (value instanceof Collection) {
-                    return path.in((Collection<?>) value);
-                }
+                if (value instanceof Collection) return path.in((Collection<?>) value);
                 return path.in(value);
 
             case NOT_IN:
-                if (value instanceof Collection) {
-                    return cb.not(path.in((Collection<?>) value));
-                }
+                if (value instanceof Collection) return cb.not(path.in((Collection<?>) value));
                 return cb.not(path.in(value));
 
             default:
                 throw new IllegalArgumentException("Không hỗ trợ operation: " + filter.getOperation());
         }
     }
+
 
     protected Pageable createPageable(List<SortCriteria> sorts, Integer page, Integer size) {
         for (SortCriteria sort : sorts) {
