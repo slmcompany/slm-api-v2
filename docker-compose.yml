@@ -2,14 +2,14 @@ version: '3.8'
 
 services:
   # Spring Boot API
-  tara-api:
+  slm-api-v2:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: tara-api
+    container_name: slm-api-v2
     restart: unless-stopped
     ports:
-      - "9999:9999"
+      - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - JAVA_OPTS=-Xms512m -Xmx1024m
@@ -18,13 +18,13 @@ services:
       # - SPRING_DATASOURCE_USERNAME=postgres
       # - SPRING_DATASOURCE_PASSWORD=slm123slm123
     networks:
-      - tara-network
-#    healthcheck:
-#      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9999/actuator/health"]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 3
-#      start_period: 60s
+      - slm-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     deploy:
       resources:
         limits:
@@ -42,7 +42,7 @@ services:
   # Nginx Reverse Proxy
   nginx:
     image: nginx:alpine
-    container_name: tara-nginx
+    container_name: slm-nginx
     restart: unless-stopped
     ports:
       - "80:80"
@@ -53,10 +53,10 @@ services:
       # SSL certificates (nếu có)
       # - ./ssl:/etc/nginx/ssl:ro
     depends_on:
-      tara-api:
+      slm-api-v2:
         condition: service_healthy
     networks:
-      - tara-network
+      - slm-network
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/actuator/health"]
       interval: 30s
@@ -69,9 +69,9 @@ services:
         max-file: "3"
 
 networks:
-  tara-network:
+  slm-network:
     driver: bridge
-    name: tara-network
+    name: slm-network
 
 # Volumes (nếu cần persist data)
 # volumes:

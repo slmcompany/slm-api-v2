@@ -1,75 +1,126 @@
+
 #!/bin/bash
 
-echo "🚀 Starting deployment with Docker Compose..."
+set -e
 
-# Colors
+echo "=========================================="
+echo "🚀 SLM API V2 Deployment Script"
+echo "=========================================="
+
+# Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# Step 1: Build JAR
-echo -e "${YELLOW}📦 Building JAR file...${NC}"
-mvn clean package -DskipTests
+# Configuration
+PROJECT_NAME="slm-api-v2"
+JAR_FILE="target/*.jar"
 
-if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Maven build failed!${NC}"
+# Function to print colored messages
+print_info() {
+    echo -e "${GREEN}[INFO]${NC} $1"
+}
+
+print_warn() {
+    echo -e "${YELLOW}[WARN]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Check if Docker is running
+print_info "Checking Docker..."
+if ! docker info > /dev/null 2>&1; then
+    print_error "Docker is not running. Please start Docker first."
     exit 1
 fi
 
-echo -e "${GREEN}✅ JAR built successfully${NC}"
+# Check if docker-compose is available
+if ! command -v docker-compose &> /dev/null; then
+    print_error "docker-compose is not installed."
+    exit 1
+fi
 
-# Step 2: Stop old containers
-echo -e "${YELLOW}🛑 Stopping old containers...${NC}"
-docker-compose down
+print_info "Docker and docker-compose are ready."
 
-# Step 3: Build and start containers
-echo -e "${YELLOW}🐳 Building Docker images and starting containers...${NC}"
+# Step 1: Clean old builds
+print_info "Cleaning old builds..."
+./mvnw clean
+
+# Step 2: Build the application
+print_info "Building application with Maven..."
+./mvnw package -DskipTests
+
+# Check if JAR file was created
+if ! ls $JAR_FILE 1> /dev/null 2>&1; then
+    print_error "JAR file not found in target directory. Build failed!"
+    exit 1
+fi
+
+print_info "Build successful! JAR file created."
+
+# Step 3: Stop and remove old containers
+print_info "Stopping existing containers..."
+docker-compose down --remove-orphans
+
+# Step 4: Remove old images (optional)
+print_warn "Removing old Docker images..."
+docker rmi ${PROJECT_NAME}:latest 2>/dev/null || true
+docker image prune -f
+
+# Step 5: Create necessary directories
+print_info "Creating necessary directories..."
+mkdir -p logs/nginx
+
+# Step 6: Build and start containers
+print_info "Building and starting Docker containers..."
 docker-compose up -d --build
 
-if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Docker Compose failed!${NC}"
-    exit 1
-fi
-
-# Step 4: Wait for services to be healthy
-echo -e "${YELLOW}⏳ Waiting for services to be healthy...${NC}"
+# Step 7: Wait for services to be healthy
+print_info "Waiting for services to be healthy..."
 sleep 10
 
-# Step 5: Check container status
-echo -e "${YELLOW}📊 Container status:${NC}"
+# Check container status
+print_info "Checking container status..."
 docker-compose ps
 
-# Step 6: Show logs
-echo -e "${YELLOW}📋 Recent logs:${NC}"
+# Step 8: Show logs
+print_info "Showing container logs (last 50 lines)..."
 docker-compose logs --tail=50
 
-# Step 7: Test health endpoint
-echo -e "${YELLOW}🔍 Testing health endpoint...${NC}"
+# Step 9: Health check
+print_info "Performing health check..."
 sleep 5
 
-#HEALTH_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/actuator/health)
+if curl -f http://localhost:8080/actuator/health > /dev/null 2>&1; then
+    print_info "✅ Spring Boot API is healthy!"
+else
+    print_warn "⚠️  Spring Boot API health check failed. Check logs with: docker-compose logs -f slm-api-v2"
+fi
 
-#if [ "$HEALTH_STATUS" == "200" ]; then
-#    echo -e "${GREEN}✅ Health check passed!${NC}"
-#else
-#    echo -e "${RED}⚠️  Health check failed! Status: $HEALTH_STATUS${NC}"
-#fi
+if curl -f http://localhost/actuator/health > /dev/null 2>&1; then
+    print_info "✅ Nginx proxy is healthy!"
+else
+    print_warn "⚠️  Nginx health check failed. Check logs with: docker-compose logs -f nginx"
+fi
 
-# Step 8: Display URLs
 echo ""
-echo -e "${GREEN}✅ Deployment completed successfully!${NC}"
+echo "=========================================="
+print_info "🎉 Deployment completed!"
+echo "=========================================="
 echo ""
-echo "📊 Service URLs:"
-#echo "  - API: http://localhost"
-#echo "  - Swagger UI: http://localhost/swagger-ui.html"
-#echo "  - API Docs: http://localhost/v3/api-docs"
-#echo "  - Health: http://localhost/actuator/health"
+echo "📌 Useful commands:"
+echo "  - View logs:        docker-compose logs -f"
+echo "  - View API logs:    docker-compose logs -f slm-api-v2"
+echo "  - View Nginx logs:  docker-compose logs -f nginx"
+echo "  - Stop containers:  docker-compose down"
+echo "  - Restart:          docker-compose restart"
 echo ""
-echo "🔧 Useful commands:"
-echo "  - View logs: docker-compose logs -f"
-echo "  - View API logs: docker-compose logs -f tara-api"
-echo "  - View Nginx logs: docker-compose logs -f nginx"
-echo "  - Stop services: docker-compose down"
-echo "  - Restart services: docker-compose restart"
-echo "  - View status: docker-compose ps"
+echo "🌐 Access points:"
+echo "  - API (direct):     http://localhost:8080"
+echo "  - API (via nginx):  http://localhost"
+echo "  - Health check:     http://localhost/actuator/health"
+echo "  - Swagger UI:       http://localhost/swagger-ui.html"
+echo ""
