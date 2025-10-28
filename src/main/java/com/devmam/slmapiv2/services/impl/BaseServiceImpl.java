@@ -10,10 +10,7 @@ import com.devmam.slmapiv2.services.BaseService;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.Path;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -298,9 +295,7 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
     @SuppressWarnings({"rawtypes", "unchecked"})
     protected Predicate createPredicate(CriteriaBuilder cb, Path<?> path, FilterCriteria filter) {
         Object value = filter.getValue();
-        if (value == null) {
-            return null;
-        }
+        if (value == null) return null;
 
         switch (filter.getOperation()) {
             case EQUALS:
@@ -308,44 +303,50 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
 
             case LESS_THAN:
                 if (Comparable.class.isAssignableFrom(path.getJavaType())) {
-                    return cb.lessThan((Path<Comparable>) path.as((Class<? extends Comparable>) path.getJavaType()),
-                            (Comparable) value);
+                    return cb.lessThan((Expression<? extends Comparable>) path, (Comparable) value);
                 }
                 throw new IllegalArgumentException("Trường '" + filter.getFieldName() + "' không phải kiểu Comparable");
 
             case LESS_THAN_OR_EQUAL:
                 if (Comparable.class.isAssignableFrom(path.getJavaType())) {
-                    return cb.lessThanOrEqualTo((Path<Comparable>) path.as((Class<? extends Comparable>) path.getJavaType()),
-                            (Comparable) value);
+                    return cb.lessThanOrEqualTo((Expression<? extends Comparable>) path, (Comparable) value);
                 }
                 throw new IllegalArgumentException("Trường '" + filter.getFieldName() + "' không phải kiểu Comparable");
 
             case GREATER_THAN:
                 if (Comparable.class.isAssignableFrom(path.getJavaType())) {
-                    return cb.greaterThan((Path<Comparable>) path.as((Class<? extends Comparable>) path.getJavaType()),
-                            (Comparable) value);
+                    return cb.greaterThan((Expression<? extends Comparable>) path, (Comparable) value);
                 }
                 throw new IllegalArgumentException("Trường '" + filter.getFieldName() + "' không phải kiểu Comparable");
 
             case GREATER_THAN_OR_EQUAL:
                 if (Comparable.class.isAssignableFrom(path.getJavaType())) {
-                    return cb.greaterThanOrEqualTo((Path<Comparable>) path.as((Class<? extends Comparable>) path.getJavaType()),
-                            (Comparable) value);
+                    return cb.greaterThanOrEqualTo((Expression<? extends Comparable>) path, (Comparable) value);
                 }
                 throw new IllegalArgumentException("Trường '" + filter.getFieldName() + "' không phải kiểu Comparable");
 
             case LIKE:
-                return cb.like(path.as(String.class), "%" + value + "%");
+                if (value instanceof String str) {
+                    return cb.like(cb.lower((Expression<String>) path), "%" + str.toLowerCase() + "%");
+                }
+                throw new IllegalArgumentException("LIKE chỉ áp dụng cho String");
 
             case ILIKE:
-                return cb.like(cb.lower(path.as(String.class)), "%" + value.toString().toLowerCase() + "%");
+                if (value instanceof String str) {
+                    return cb.like(cb.lower((Expression<String>) path), "%" + str.toLowerCase() + "%");
+                }
+                throw new IllegalArgumentException("ILIKE chỉ áp dụng cho String");
 
             case IN:
-                if (value instanceof Collection) return path.in((Collection<?>) value);
+                if (value instanceof Collection<?> collection) {
+                    return path.in(collection);
+                }
                 return path.in(value);
 
             case NOT_IN:
-                if (value instanceof Collection) return cb.not(path.in((Collection<?>) value));
+                if (value instanceof Collection<?> collection) {
+                    return cb.not(path.in(collection));
+                }
                 return cb.not(path.in(value));
 
             default:
