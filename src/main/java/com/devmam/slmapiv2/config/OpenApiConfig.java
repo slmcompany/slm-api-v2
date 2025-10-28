@@ -27,20 +27,20 @@ public class OpenApiConfig {
                         .title(title)
                         .version(version)
                         .description(description)
-                        .contact(new Contact()
-                                .name("Tara Academy API")
-                                .email("support@tara-academy.com")
-//                                .url("https://tara-academy.com")
-                        )
+//                        .contact(new Contact()
+//                                .name("Tara Academy API")
+//                                .email("support@tara-academy.com")
+////                                .url("https://tara-academy.com")
+//                        )
                         .license(new License()
                                 .name("MIT License")
                                 .url("https://opensource.org/licenses/MIT")))
                 .servers(List.of(
                         new Server()
-                                .url("http://localhost:8880")
+                                .url("http://localhost:8080")
                                 .description("Local Development Server"),
                         new Server()
-//                                .url("https://api.tara-academy.com")
+//                                .url("http://103.161.16.66")
                                 .description("Production Server")));
     }
 
