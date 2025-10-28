@@ -20,6 +20,8 @@ public class NhomVatTuController {
 
     @Autowired
     private NhomVatTuService nhomVatTuService;
+    @Autowired
+    private NhomVatTuMapper nhomVatTuMapper;
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseData<NhomVatTuDto>> getById(@PathVariable Integer id) {
@@ -32,7 +34,7 @@ public class NhomVatTuController {
                         .status(200)
                         .error(null)
                         .message("Success")
-                        .data(NhomVatTuMapper.INSTANCE.toDto(nhomVatTu.get()))
+                        .data(nhomVatTuMapper.toDto(nhomVatTu.get()))
                         .build()
         );
     }
@@ -44,7 +46,7 @@ public class NhomVatTuController {
                         .status(200)
                         .error(null)
                         .message("Success")
-                        .data(NhomVatTuMapper.INSTANCE.toDtoPage(nhomVatTuService.filter(filter)))
+                        .data(nhomVatTuMapper.toDtoPage(nhomVatTuService.filter(filter)))
                         .build()
         );
     }

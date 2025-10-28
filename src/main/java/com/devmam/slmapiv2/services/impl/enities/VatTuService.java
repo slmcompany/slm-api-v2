@@ -50,6 +50,9 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
     @Autowired
     private NhaCungCapService nhaCungCapService;
 
+    @Autowired
+    private VatTuMapper vatTuMapper;
+
 
 
     public VatTuService(JpaRepository<VatTu, Integer> repository) {
@@ -121,7 +124,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                 ResponseData.<VatTuDto>builder()
                         .status(200)
                         .message("Create success")
-                        .data(VatTuMapper.INSTANCE.toDto(creatingVattu))
+                        .data(vatTuMapper.toDto(creatingVattu))
                         .error(null)
                         .build()
         );

@@ -3,7 +3,6 @@ package com.devmam.slmapiv2.mapper;
 import com.devmam.slmapiv2.dto.response.entities.VatTuDto;
 import com.devmam.slmapiv2.entities.VatTu;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface VatTuMapper {
 
-    VatTuMapper INSTANCE = Mappers.getMapper(VatTuMapper.class);
+//    VatTuMapper INSTANCE = Mappers.getMapper(VatTuMapper.class);
 
     VatTuDto toDto(VatTu vatTu);
 

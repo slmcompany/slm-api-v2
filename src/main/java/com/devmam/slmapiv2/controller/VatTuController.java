@@ -32,6 +32,9 @@ public class VatTuController {
     @Autowired
     private TepTinService tepTinService;
 
+    @Autowired
+    private VatTuMapper vatTuMapper;
+
     @GetMapping("/{id}")
     public ResponseEntity<ResponseData<VatTuDto>> getById(Integer id) {
 
@@ -46,7 +49,7 @@ public class VatTuController {
                         .status(200)
                         .error(null)
                         .message("Success")
-                        .data(VatTuMapper.INSTANCE.toDto(vatTu.get()))
+                        .data(vatTuMapper.toDto(vatTu.get()))
                         .build()
         );
     }
@@ -58,7 +61,7 @@ public class VatTuController {
                         .status(200)
                         .error(null)
                         .message("Success")
-                        .data(VatTuMapper.INSTANCE.toDtoPage(vatTuService.filter(filter)))
+                        .data(vatTuMapper.toDtoPage(vatTuService.filter(filter)))
                         .build()
         );
     }

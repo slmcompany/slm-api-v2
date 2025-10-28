@@ -23,6 +23,8 @@ public class TronGoiController {
 
     @Autowired
     private TronGoiService tronGoiService;
+    @Autowired
+    private TronGoiMapper tronGoiMapper;
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseData<TronGoiDto>> getById(@PathVariable Integer id) {
@@ -37,7 +39,7 @@ public class TronGoiController {
                         .status(200)
                         .error(null)
                         .message("Success")
-                        .data(TronGoiMapper.INSTANCE.toDto(tronGoi.get()))
+                        .data(tronGoiMapper.toDto(tronGoi.get()))
                         .build()
         );
     }
@@ -49,7 +51,7 @@ public class TronGoiController {
                         .status(200)
                         .error(null)
                         .message("Success")
-                        .data(TronGoiMapper.INSTANCE.toDtoPage(tronGoiService.filter(filter)))
+                        .data(tronGoiMapper.toDtoPage(tronGoiService.filter(filter)))
                         .build()
         );
     }

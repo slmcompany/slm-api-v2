@@ -46,6 +46,9 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
     private VatTuTronGoiService vatTuTronGoiService;
 
     @Autowired
+    private TronGoiMapper tronGoiMapper;
+
+    @Autowired
     private EntityManager entityManager;
 
     public TronGoiService(JpaRepository<TronGoi, Integer> repository) {
@@ -103,7 +106,7 @@ public class TronGoiService extends BaseServiceImpl<TronGoi, Integer> {
                     ResponseData.<TronGoiDto>builder()
                             .status(200)
                             .message("Create success")
-                            .data(TronGoiMapper.INSTANCE.toDto(tronGoi))
+                            .data(tronGoiMapper.toDto(tronGoi))
                             .build()
             );
         } catch (Exception e) {

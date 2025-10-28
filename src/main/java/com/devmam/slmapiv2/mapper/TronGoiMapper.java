@@ -3,14 +3,12 @@ package com.devmam.slmapiv2.mapper;
 import com.devmam.slmapiv2.dto.response.entities.TronGoiDto;
 import com.devmam.slmapiv2.entities.TronGoi;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface TronGoiMapper {
-    TronGoiMapper INSTANCE = Mappers.getMapper(TronGoiMapper.class);
+//    TronGoiMapper INSTANCE = Mappers.getMapper(TronGoiMapper.class);
 
     TronGoiDto toDto(TronGoi tronGoi);
 
