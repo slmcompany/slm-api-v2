@@ -24,7 +24,7 @@ public class NhomVatTuDto implements Serializable {
     NganhHangDto nghanhHang;
     @Size(max = 400)
     String ten;
-    Map<String, ThuocTinh> thuocTinhRieng;
+    Map<String, Object> thuocTinhRieng;
     Double gm;
     Boolean vatTuChinh;
     Integer trangThai;
