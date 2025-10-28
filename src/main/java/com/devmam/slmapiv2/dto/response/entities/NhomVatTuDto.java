@@ -1,5 +1,6 @@
 package com.devmam.slmapiv2.dto.response.entities;
 
+import com.devmam.slmapiv2.dto.request.entities.ThuocTinh;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,7 +24,7 @@ public class NhomVatTuDto implements Serializable {
     NganhHangDto nghanhHang;
     @Size(max = 400)
     String ten;
-    Map<String, Object> thuocTinhRieng;
+    Map<String, ThuocTinh> thuocTinhRieng;
     Double gm;
     Boolean vatTuChinh;
     Integer trangThai;

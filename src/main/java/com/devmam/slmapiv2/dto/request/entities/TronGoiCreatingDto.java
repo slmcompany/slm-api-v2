@@ -1,8 +1,6 @@
 package com.devmam.slmapiv2.dto.request.entities;
 
-import com.devmam.slmapiv2.dto.response.entities.VatTuTronGoiDto;
 import com.devmam.slmapiv2.entities.TronGoi;
-import com.devmam.slmapiv2.entities.VatTuTronGoi;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

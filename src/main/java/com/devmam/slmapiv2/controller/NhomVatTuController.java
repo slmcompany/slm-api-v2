@@ -1,6 +1,7 @@
 package com.devmam.slmapiv2.controller;
 
 import com.devmam.slmapiv2.dto.request.BaseFilterRequest;
+import com.devmam.slmapiv2.dto.request.entities.NhomVatTuCreatingDto;
 import com.devmam.slmapiv2.dto.response.ResponseData;
 import com.devmam.slmapiv2.dto.response.entities.NhomVatTuDto;
 import com.devmam.slmapiv2.entities.NhomVatTu;
@@ -49,5 +50,10 @@ public class NhomVatTuController {
                         .data(nhomVatTuMapper.toDtoPage(nhomVatTuService.filter(filter)))
                         .build()
         );
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<ResponseData<NhomVatTuDto>> create(@RequestBody NhomVatTuCreatingDto dto){
+        return nhomVatTuService.create(dto);
     }
 }
