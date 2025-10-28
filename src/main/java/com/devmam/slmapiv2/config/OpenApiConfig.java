@@ -40,8 +40,9 @@ public class OpenApiConfig {
                                 .url("http://localhost:8080")
                                 .description("Local Development Server"),
                         new Server()
-//                                .url("http://103.161.16.66")
-                                .description("Production Server")));
+                                .url("http://103.161.16.66")
+                                .description("Production Server")
+                ));
     }
 
     @Bean
