@@ -9,8 +9,8 @@ import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -20,7 +20,7 @@ import java.util.Set;
 @Entity
 @Table(name = "vat_tu")
 public class VatTu implements Serializable {
-    private static final long serialVersionUID = 7712732206499312964L;
+    private static final long serialVersionUID = 1869059146306112201L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -69,6 +69,9 @@ public class VatTu implements Serializable {
     private Integer trangThai;
 
     @OneToMany(mappedBy = "vatTu", fetch = FetchType.LAZY)
-    Set<AnhVatTu> anhVatTus;
+    private List<AnhVatTu> anhVatTus;
+
+    @OneToMany(mappedBy = "vatTu", fetch = FetchType.LAZY)
+    private List<ThongTinGia> thongTinGias;
 
 }

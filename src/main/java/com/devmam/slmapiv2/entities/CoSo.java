@@ -14,41 +14,29 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "nha_cung_cap")
-public class NhaCungCap implements Serializable {
-    private static final long serialVersionUID = 5885156765267814821L;
+@Table(name = "co_so")
+public class CoSo implements Serializable {
+    private static final long serialVersionUID = -6063366457844942742L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 200)
-    @Column(name = "ten_quoc_te", length = 200)
-    private String tenQuocTe;
+    @Size(max = 50)
+    @Column(name = "ma", length = 50)
+    private String ma;
 
     @Size(max = 200)
     @Column(name = "ten", length = 200)
     private String ten;
 
-    @Size(max = 200)
-    @Column(name = "quoc_gia", length = 200)
-    private String quocGia;
+    @Size(max = 500)
+    @Column(name = "dc_van_phong", length = 500)
+    private String dcVanPhong;
 
-    @Size(max = 20)
-    @Column(name = "sdt", length = 20)
-    private String sdt;
-
-    @Size(max = 100)
-    @Column(name = "email", length = 100)
-    private String email;
-
-    @Size(max = 400)
-    @Column(name = "mo_ta", length = 400)
-    private String moTa;
-
-    @Size(max = 1000)
-    @Column(name = "anh", length = 1000)
-    private String anh;
+    @Size(max = 500)
+    @Column(name = "dc_kho", length = 500)
+    private String dcKho;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "tao_luc")

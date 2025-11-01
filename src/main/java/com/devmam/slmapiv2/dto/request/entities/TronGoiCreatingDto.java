@@ -13,12 +13,11 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class TronGoiCreatingDto {
+    ThongTinTronGoiCoSoCreatingDto[] tronGoiCoSos;
     Integer nhomTronGoiId;
     String ten;
     String loaiHeThong;
     String loaiPha;
-    Double sanLuongToiThieu;
-    Double sanLuongToiDa;
     String moTa;
     Double tongGia;
     Boolean banChay;
@@ -29,8 +28,6 @@ public class TronGoiCreatingDto {
                 .ten(dto.getTen())
                 .loaiHeThong(dto.getLoaiHeThong())
                 .loaiPha(dto.getLoaiPha())
-                .sanLuongToiThieu(dto.getSanLuongToiThieu())
-                .sanLuongToiDa(dto.getSanLuongToiDa())
                 .moTa(dto.getMoTa())
                 .tongGia(dto.getTongGia())
                 .banChay(dto.getBanChay())

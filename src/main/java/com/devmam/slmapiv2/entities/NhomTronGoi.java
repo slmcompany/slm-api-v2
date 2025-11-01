@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 @Builder
 @AllArgsConstructor
@@ -15,7 +16,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "nhom_tron_goi")
 public class NhomTronGoi implements Serializable {
-    private static final long serialVersionUID = 4870267156852250787L;
+    private static final long serialVersionUID = -2512445701003010969L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -40,6 +41,10 @@ public class NhomTronGoi implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thuong_hieu_pin_luu_tru")
     private ThuongHieu thuongHieuPinLuuTru;
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "tao_luc")
+    private Instant taoLuc;
 
     @ColumnDefault("0")
     @Column(name = "trang_thai")

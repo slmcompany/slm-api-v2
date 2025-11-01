@@ -8,6 +8,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -20,11 +21,15 @@ import java.time.Instant;
         @UniqueConstraint(name = "nguoi_dung_sdt_key", columnNames = {"sdt"})
 })
 public class NguoiDung implements Serializable {
-    private static final long serialVersionUID = 2893225415989437146L;
+    private static final long serialVersionUID = -2944132150935765947L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "co_so_id")
+    private CoSo coSo;
 
     @Size(max = 20)
     @NotNull
@@ -82,5 +87,8 @@ public class NguoiDung implements Serializable {
     @ColumnDefault("0")
     @Column(name = "trang_thai")
     private Integer trangThai;
+
+    @OneToMany(mappedBy = "nguoiGioiThieu", fetch = FetchType.LAZY)
+    private List<KhachHang> khachHangs;
 
 }

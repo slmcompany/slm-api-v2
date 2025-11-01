@@ -9,8 +9,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class ThuocTinh {
-    String ten;
-    String donVi;
-    Object giaTri;
+public class ThongTinTronGoiCoSoCreatingDto {
+    Integer coSoId;
+    Double sanLuongToiThieu;
+    Double sanLuongToiDa;
 }

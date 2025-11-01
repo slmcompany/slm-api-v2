@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -60,7 +61,7 @@ public class TronGoiController {
             value = "/create",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<ResponseData<TronGoiDto>> create(@RequestPart("dto") TronGoiCreatingDto dto, @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<ResponseData<List<TronGoiDto>>> create(@RequestPart("dto") TronGoiCreatingDto dto, @RequestPart("file") MultipartFile file) {
         return tronGoiService.create(dto,file);
     }
 

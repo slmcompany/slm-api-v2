@@ -17,7 +17,7 @@ import java.time.Instant;
 @Entity
 @Table(name = "khach_hang")
 public class KhachHang implements Serializable {
-    private static final long serialVersionUID = -6517765279357296345L;
+    private static final long serialVersionUID = 8558374921483694864L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -53,13 +53,13 @@ public class KhachHang implements Serializable {
     @JoinColumn(name = "nguoi_gioi_thieu")
     private NguoiDung nguoiGioiThieu;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "tao_luc")
-    private Instant taoLuc;
-
     @ColumnDefault("false")
     @Column(name = "da_ban_duoc_hang")
     private Boolean daBanDuocHang;
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "tao_luc")
+    private Instant taoLuc;
 
     @ColumnDefault("0")
     @Column(name = "trang_thai")

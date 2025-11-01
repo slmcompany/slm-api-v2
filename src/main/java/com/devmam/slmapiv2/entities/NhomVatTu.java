@@ -8,6 +8,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Map;
 
 @Builder
@@ -16,14 +17,17 @@ import java.util.Map;
 @Getter
 @Setter
 @Entity
-@Table(name = "nhom_vat_tu")
+@Table(name = "nhom_vat_tu", uniqueConstraints = {
+        @UniqueConstraint(name = "nhom_vat_tu_ma_key", columnNames = {"ma"})
+})
 public class NhomVatTu implements Serializable {
-    private static final long serialVersionUID = -6981409597414038825L;
+    private static final long serialVersionUID = -9112334992147881083L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Size(max = 200)
     @Column(name = "ma", length = 200)
     private String ma;
 
@@ -46,6 +50,10 @@ public class NhomVatTu implements Serializable {
     @ColumnDefault("false")
     @Column(name = "vat_tu_chinh")
     private Boolean vatTuChinh;
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "tao_luc")
+    private Instant taoLuc;
 
     @ColumnDefault("0")
     @Column(name = "trang_thai")

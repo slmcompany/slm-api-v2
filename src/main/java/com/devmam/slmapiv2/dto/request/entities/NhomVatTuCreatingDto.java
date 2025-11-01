@@ -1,6 +1,5 @@
 package com.devmam.slmapiv2.dto.request.entities;
 
-import com.devmam.slmapiv2.dto.response.entities.NganhHangDto;
 import com.devmam.slmapiv2.entities.NhomVatTu;
 import jakarta.validation.constraints.Size;
 import lombok.*;

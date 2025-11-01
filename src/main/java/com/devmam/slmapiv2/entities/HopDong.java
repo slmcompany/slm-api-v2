@@ -16,11 +16,15 @@ import java.time.Instant;
 @Entity
 @Table(name = "hop_dong")
 public class HopDong implements Serializable {
-    private static final long serialVersionUID = 8726500595234125408L;
+    private static final long serialVersionUID = 4717291732805897335L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "co_so_id")
+    private CoSo coSo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nghanh_hang_id")
@@ -53,10 +57,6 @@ public class HopDong implements Serializable {
     @Column(name = "mo_ta", length = Integer.MAX_VALUE)
     private String moTa;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "tao_luc")
-    private Instant taoLuc;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nguoi_gioi_thieu")
     private NguoiDung nguoiGioiThieu;
@@ -67,6 +67,10 @@ public class HopDong implements Serializable {
 
     @Column(name = "tong_gia")
     private Double tongGia;
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "tao_luc")
+    private Instant taoLuc;
 
     @ColumnDefault("0")
     @Column(name = "trang_thai")

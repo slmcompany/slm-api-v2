@@ -1,11 +1,14 @@
 package com.devmam.slmapiv2.dto.request.entities;
 
 import com.devmam.slmapiv2.entities.VatTu;
+import com.devmam.slmapiv2.entities.commons.GiaInfo;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -26,18 +29,21 @@ public class VatTuCreatingDto {
     String donVi;
     String moTaBaoGia;
     String moTaHopDong;
-    Map<String, Object> duLieuRieng;
+    Map<String, ThuocTinh> duLieuRieng;
     Instant taoLuc;
     Integer trangThai;
 
+    List<GiaInfo> dsGia;
+
     public static VatTu toEntity(VatTuCreatingDto dto) {
+        Map<String, Object> thuocTinhRiengObj = new HashMap<>(dto.getDuLieuRieng());
         return VatTu.builder()
                 .ten(dto.getTen())
                 .sheetLink(dto.getSheetLink())
                 .donVi(dto.getDonVi())
                 .moTaBaoGia(dto.getMoTaBaoGia())
                 .moTaHopDong(dto.getMoTaHopDong())
-                .duLieuRieng(dto.getDuLieuRieng())
+                .duLieuRieng(thuocTinhRiengObj)
                 .taoLuc(dto.getTaoLuc())
                 .trangThai(dto.getTrangThai())
                 .build();

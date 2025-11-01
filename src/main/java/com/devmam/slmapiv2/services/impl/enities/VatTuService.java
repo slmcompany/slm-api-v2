@@ -36,12 +36,6 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
     private TepTinService tepTinService;
 
     @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private MinioService minioService;
-
-    @Autowired
     private NhomVatTuService nhomVatTuService;
 
     @Autowired
@@ -49,6 +43,15 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
 
     @Autowired
     private NhaCungCapService nhaCungCapService;
+
+    @Autowired
+    private ThongTinGiaService thongTinGiaService;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private MinioService minioService;
 
     @Autowired
     private VatTuMapper vatTuMapper;
@@ -61,7 +64,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
 
     @Override
     public EntityManager getEntityManager() {
-        return null;
+        return entityManager;
     }
 
 
@@ -71,6 +74,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
 
         VatTu creatingVattu = VatTuCreatingDto.toEntity(dto);
         Optional<NhomVatTu> nhomVatTu = nhomVatTuService.getOne(creatingVattu.getNhomVatTu().getId());
+
         if(nhomVatTu.isEmpty()){
             throw new CommonException("Không tìm thấy nhóm vật tư id: "+creatingVattu.getNhomVatTu().getId());
         }
@@ -104,7 +108,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                                 .build()
                 );
 
-                AnhVatTu anhVatTu = anhVatTuService.create(
+                anhVatTuService.create(
                         AnhVatTu.builder()
                                 .vatTu(creatingVattu)
                                 .tepTin(creatingTepTin)
@@ -119,7 +123,13 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                 throw new RuntimeException("Lỗi tạo tệp tin cho vật tư: " + dto.getTen(), e);
             }
         }
-        creatingVattu = repository.getById(creatingVattu.getId());
+        ThongTinGia creatingThongTinGia = ThongTinGia.builder()
+                .vatTu(creatingVattu)
+                .dsGia(dto.getDsGia())
+                .trangThai(1)
+                .build();
+        thongTinGiaService.create(creatingThongTinGia);
+        creatingVattu = getOne(creatingVattu.getId()).get();
         return ResponseEntity.ok(
                 ResponseData.<VatTuDto>builder()
                         .status(200)

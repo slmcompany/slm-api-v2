@@ -19,7 +19,7 @@ import java.time.Instant;
         @UniqueConstraint(name = "tep_tin_ten_luu_tru_key", columnNames = {"ten_luu_tru"})
 })
 public class TepTin implements Serializable {
-    private static final long serialVersionUID = 5762303137637022785L;
+    private static final long serialVersionUID = -8670717574587185615L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

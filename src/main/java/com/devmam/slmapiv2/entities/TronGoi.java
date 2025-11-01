@@ -7,7 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Set;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -17,11 +17,15 @@ import java.util.Set;
 @Entity
 @Table(name = "tron_goi")
 public class TronGoi implements Serializable {
-    private static final long serialVersionUID = 8764465248252455623L;
+    private static final long serialVersionUID = -6162546317248557160L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "co_so_id")
+    private CoSo coSo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nhom_tron_goi_id")
@@ -52,10 +56,6 @@ public class TronGoi implements Serializable {
     @Column(name = "mo_ta", length = Integer.MAX_VALUE)
     private String moTa;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "tao_luc")
-    private Instant taoLuc;
-
     @Column(name = "tong_gia")
     private Double tongGia;
 
@@ -63,11 +63,15 @@ public class TronGoi implements Serializable {
     @Column(name = "ban_chay")
     private Boolean banChay;
 
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "tao_luc")
+    private Instant taoLuc;
+
     @ColumnDefault("0")
     @Column(name = "trang_thai")
     private Integer trangThai;
 
     @OneToMany(mappedBy = "tronGoi", fetch = FetchType.LAZY)
-    Set<VatTuTronGoi> vatTuTronGois;
+    List<VatTuTronGoi> vatTuTronGois;
 
 }
