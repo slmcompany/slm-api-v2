@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Map;
 
 /**
@@ -27,5 +28,6 @@ public class NhomVatTuDto implements Serializable {
     Map<String, Object> thuocTinhRieng;
     Double gm;
     Boolean vatTuChinh;
+    Instant taoLuc;
     Integer trangThai;
 }

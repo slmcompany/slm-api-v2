@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/tron-goi")
+@RequestMapping("/basic-api/tron-goi")
 public class TronGoiController {
 
     @Autowired
