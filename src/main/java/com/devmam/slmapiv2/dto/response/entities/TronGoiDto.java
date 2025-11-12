@@ -21,6 +21,7 @@ import java.util.Set;
 public class TronGoiDto implements Serializable {
     Integer id;
     NhomTronGoiDto nhomTronGoi;
+    CoSoDto coSo;
     @Size(max = 400)
     String ten;
     TepTinDto tepTin;

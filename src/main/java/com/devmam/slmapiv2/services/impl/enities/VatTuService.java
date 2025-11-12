@@ -73,18 +73,18 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
 //        Integer userId = jwtService.getUserId(jwtService.getTokenFromAuthHeader(request.getHeader("Authorization")));
 
         VatTu creatingVattu = VatTuCreatingDto.toEntity(dto);
-        Optional<NhomVatTu> nhomVatTu = nhomVatTuService.getOne(creatingVattu.getNhomVatTu().getId());
+        Optional<NhomVatTu> nhomVatTu = nhomVatTuService.getOne(dto.getNhomVatTuId());
 
         if(nhomVatTu.isEmpty()){
-            throw new CommonException("Không tìm thấy nhóm vật tư id: "+creatingVattu.getNhomVatTu().getId());
+            throw new CommonException("Không tìm thấy nhóm vật tư id: "+dto.getNhomVatTuId());
         }
-        Optional<ThuongHieu> thuongHieu = thuongHieuService.getOne(creatingVattu.getThuongHieu().getId());
+        Optional<ThuongHieu> thuongHieu = thuongHieuService.getOne(dto.getThuongHieuId());
         if(thuongHieu.isEmpty()){
-            throw new CommonException("Không tìm thấy thương hiệu id: "+creatingVattu.getThuongHieu().getId());
+            throw new CommonException("Không tìm thấy thương hiệu id: "+dto.getThuongHieuId());
         }
-        Optional<NhaCungCap> nhaCungCap = nhaCungCapService.getOne(creatingVattu.getNhaCungCap().getId());
+        Optional<NhaCungCap> nhaCungCap = nhaCungCapService.getOne(dto.getNhaCungCapId());
         if(nhaCungCap.isEmpty()){
-            throw new CommonException("Không tìm thấy nhà cung cấp id: "+creatingVattu.getNhaCungCap().getId());
+            throw new CommonException("Không tìm thấy nhà cung cấp id: "+dto.getNhaCungCapId());
         }
         creatingVattu.setThuongHieu(thuongHieu.get());
         creatingVattu.setNhaCungCap(nhaCungCap.get());
@@ -96,7 +96,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
         for (MultipartFile file : files) {
             i++;
             try {
-                String objectName = minioService.upload(file);
+                String objectName = minioService.upload(file, "vat_tu_"+creatingVattu.getTen()+"_"+i);
                 TepTin creatingTepTin = tepTinService.create(
                         TepTin.builder()
                                 .tenTepGoc(creatingVattu.getTen()+"_"+i)
@@ -105,6 +105,8 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                                 .duongDan(minioService.getPublicUrl(objectName))
                                 .loaiTepTin(FileType.IMAGE.toString())
                                 .duoiTep(minioService.getObjectInfo(objectName).getUserMetadata().get("file-extension"))
+                                .trangThai(1)
+                                .taoLuc(creatingVattu.getTaoLuc())
                                 .build()
                 );
 
@@ -114,6 +116,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                                 .tepTin(creatingTepTin)
                                 .anhChinh(i == 1)
                                 .trangThai(1)
+                                .taoLuc(creatingVattu.getTaoLuc())
                                 .build()
                 );
 
@@ -127,6 +130,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
                 .vatTu(creatingVattu)
                 .dsGia(dto.getDsGia())
                 .trangThai(1)
+                .taoLuc(creatingVattu.getTaoLuc())
                 .build();
         thongTinGiaService.create(creatingThongTinGia);
         creatingVattu = getOne(creatingVattu.getId()).get();

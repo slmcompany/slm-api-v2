@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/basic-api/nhom-tron-goi")
 public class NhomTronGoiController {
@@ -48,5 +50,17 @@ public class NhomTronGoiController {
     @PostMapping("/create")
     public ResponseEntity<ResponseData<NhomTronGoiDto>> create(@RequestBody NhomTronGoiCreatingDto dto) {
         return nhomTronGoiService.create(dto);
+    }
+
+    @PostMapping("/all")
+    public ResponseEntity<ResponseData<List<NhomTronGoiDto>>> getAll() {
+        return ResponseEntity.ok(
+                ResponseData.<List<NhomTronGoiDto>>builder()
+                        .status(200)
+                        .error(null)
+                        .message("Success")
+                        .data(nhomTronGoiMapper.toDtoList(nhomTronGoiService.getAll()))
+                        .build()
+        );
     }
 }
