@@ -42,9 +42,6 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
     private ThuongHieuService thuongHieuService;
 
     @Autowired
-    private NhaCungCapService nhaCungCapService;
-
-    @Autowired
     private ThongTinGiaService thongTinGiaService;
 
     @Autowired
@@ -82,12 +79,7 @@ public class VatTuService extends BaseServiceImpl<VatTu, Integer> {
         if(thuongHieu.isEmpty()){
             throw new CommonException("Không tìm thấy thương hiệu id: "+dto.getThuongHieuId());
         }
-        Optional<NhaCungCap> nhaCungCap = nhaCungCapService.getOne(dto.getNhaCungCapId());
-        if(nhaCungCap.isEmpty()){
-            throw new CommonException("Không tìm thấy nhà cung cấp id: "+dto.getNhaCungCapId());
-        }
         creatingVattu.setThuongHieu(thuongHieu.get());
-        creatingVattu.setNhaCungCap(nhaCungCap.get());
         creatingVattu.setNhomVatTu(nhomVatTu.get());
 
         creatingVattu = create(creatingVattu);

@@ -23,17 +23,6 @@ public class NhomTronGoiController {
     @Autowired
     private NhomTronGoiMapper nhomTronGoiMapper;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseData<NhomTronGoiDto>> getById(@PathVariable Integer id) {
-        return ResponseEntity.ok(
-                ResponseData.<NhomTronGoiDto>builder()
-                        .status(200)
-                        .error(null)
-                        .message("Success")
-                        .data(nhomTronGoiMapper.toDto(nhomTronGoiService.getOne(id).orElse(null)))
-                        .build()
-        );
-    }
 
     @PostMapping("/filter")
     public ResponseEntity<ResponseData<Page<NhomTronGoiDto>>> filter(@RequestBody BaseFilterRequest filter) {
@@ -52,7 +41,7 @@ public class NhomTronGoiController {
         return nhomTronGoiService.create(dto);
     }
 
-    @PostMapping("/all")
+    @GetMapping("/all")
     public ResponseEntity<ResponseData<List<NhomTronGoiDto>>> getAll() {
         return ResponseEntity.ok(
                 ResponseData.<List<NhomTronGoiDto>>builder()

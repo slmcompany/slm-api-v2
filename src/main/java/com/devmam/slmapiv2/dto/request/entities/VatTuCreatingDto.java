@@ -20,7 +20,6 @@ import java.util.Map;
 public class VatTuCreatingDto {
     Integer nhomVatTuId;
     Integer thuongHieuId;
-    Integer nhaCungCapId;
     @Size(max = 400)
     String ten;
     @Size(max = 1000)

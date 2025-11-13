@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * DTO for {@link com.devmam.slmapiv2.entities.VatTu}
@@ -24,7 +23,6 @@ public class VatTuDto implements Serializable {
     Integer id;
     NhomVatTuDto nhomVatTu;
     ThuongHieuDto thuongHieu;
-    NhaCungCapDto nhaCungCap;
     @Size(max = 400)
     String ten;
     @Size(max = 1000)

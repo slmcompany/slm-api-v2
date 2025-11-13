@@ -34,10 +34,6 @@ public class VatTu implements Serializable {
     @JoinColumn(name = "thuong_hieu_id")
     private ThuongHieu thuongHieu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "nha_cung_cap_id")
-    private NhaCungCap nhaCungCap;
-
     @Size(max = 400)
     @Column(name = "ten", length = 400)
     private String ten;
